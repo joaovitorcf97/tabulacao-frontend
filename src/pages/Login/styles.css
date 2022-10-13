@@ -1,0 +1,74 @@
+.container-login {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+.container-left {
+    background: #3c37ff;
+    height: 100vh;
+    color: #ffffff;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 34%;
+}
+
+.container-left h1 {
+    font-size: 30px;
+
+}
+
+.container-left p {
+    font-size: 16px;
+    padding-top: 16px;
+}
+
+.container-right {
+    background: #ffffff;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-right form {
+    width: 500px;
+}
+
+.container-right form h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 32px;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input span {
+    color: #858e93;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.input input {
+    border: 1px solid #e5e6ea;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.container-right form button {
+    width: 100%;
+    height: 54px;
+    border-radius: 8px;
+    background: #3c37fd;
+    color: #ffffff;
+    transition: filter 0.2s;
+}
+
+.container-right form button:hover {
+    filter: opacity(.9);
+}

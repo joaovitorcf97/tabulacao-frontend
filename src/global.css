@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 400 14px Poppins, sans-serif;
+    background: #f7f7f7;
+    -webkit-font-smoothing: antialiased;
+}
+
+input,
+button,
+textarea {
+    font: 400 16px Poppins, sans-serif;
+    border: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 310px 2fr;
+}
+
+.container-dashboard-left {
+    height: 100vh;
+    background: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-info {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.profile {
+    background: #ffffff;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    margin-bottom: 16px;
+    border: 8px solid #282828;
+}
+
+.profile p {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.name {
+    color: #fff;
+    font-size: 18px;
+}
+
+.role {
+    color: #fff;
+    font-size: 14px;
+    padding-top: 8px;
+    color: #9b9da2;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu li {
+    text-decoration: none;
+    width: 80%;
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+}
+
+.menu li a {
+    padding-left: 16px;
+    border-radius: 8px;
+    width: 100%;
+    height: 48px;
+    color: #9b9da2;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.active {
+    background: #282828;
+
+}
+
+.active p {
+    color: #ffffff;
+}
+
+.menu li a:hover {
+    background: #282828;
+}
+
+.menu li a p {
+    padding-left: 16px;
+}
+
+.logout {
+    text-decoration: none;
+    width: 100%;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logout a {
+    padding-left: 16px;
+    width: 80%;
+    border-radius: 8px;
+    height: 48px;
+    color: #9b9da2;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+
+}
+
+.logout a:hover {
+    background: #282828;
+}
+
+.logout a p {
+    padding-left: 16px;
+}
