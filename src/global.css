@@ -9,7 +9,7 @@
 
 body {
     font: 400 14px Poppins, sans-serif;
-    background: #f7f7f7;
+    background: #fff;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -30,11 +30,15 @@ button {
 }
 
 .container-dashboard-left {
-    height: 100vh;
-    background: #1e1e1e;
+    margin: 10px;
+    border-radius: 8px;
+    height: calc(100vh - 20px);
+    background: #151718;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: sticky;
+    top: 10px;
 }
 
 .profile-info {
@@ -96,7 +100,7 @@ button {
     border-radius: 8px;
     width: 100%;
     height: 48px;
-    color: #9b9da2;
+    color: #646667;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -104,7 +108,7 @@ button {
 }
 
 .active {
-    background: #282828;
+    background: #2b2c30;
 
 }
 
@@ -113,7 +117,7 @@ button {
 }
 
 .menu li a:hover {
-    background: #282828;
+    background: #2b2c30;
 }
 
 .menu li a p {
@@ -148,4 +152,19 @@ button {
 
 .logout a p {
     padding-left: 16px;
+}
+
+.breadcrumb {
+    display: flex;
+    margin-bottom: 32px;
+}
+
+.breadcrumb a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #7f808b;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
 }

@@ -10,7 +10,6 @@ function CustonLink({ to, children, ...props }: any) {
   return (
     <li className={isActive ? 'active' : ''}>
       <Link to={to} {...props}>
-
         {children}
       </Link>
     </li>
@@ -29,31 +28,31 @@ function NavBar() {
       </div>
 
       <ul className='menu'>
-        <CustonLink to='/dashboard'>
-          <FiHome size={20} color="#83879a" />
+        <CustonLink to='/home/dashboard'>
+          <FiHome size={20} color="#646667" />
           <p>Dashboard</p>
         </CustonLink>
-        <CustonLink to='/tabulacao'>
-          <FiTrello size={20} color="#83879a" />
+        <CustonLink to='/home/tabulacao'>
+          <FiTrello size={20} color="#646667" />
           <p>Tabulação</p>
         </CustonLink>
-        <CustonLink to='/categories'>
-          <BiCategory size={20} color="#83879a" />
+        <CustonLink to='/home/categories'>
+          <BiCategory size={20} color="#646667" />
           <p>Categorias</p>
         </CustonLink>
-        <CustonLink to='/users'>
-          <FiUsers size={20} color="#83879a" />
+        <CustonLink to='/home/users'>
+          <FiUsers size={20} color="#646667" />
           <p>Usuários</p>
         </CustonLink>
-        <CustonLink to='/settings'>
-          <FiSettings size={20} color="#83879a" />
+        <CustonLink to='/home/settings'>
+          <FiSettings size={20} color="#646667" />
           <p>Configurações</p>
         </CustonLink>
       </ul>
 
       <div className='logout'>
         <Link to={'/'}>
-          <CgLogOut size={20} color="#83879a" />
+          <CgLogOut size={20} color="#646667" />
           <p>Sair</p>
         </Link>
       </div>
