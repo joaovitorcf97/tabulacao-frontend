@@ -3,6 +3,12 @@
     flex-direction: column;
 }
 
+.table span {
+    color: #7f808b;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
 .row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -82,10 +88,8 @@ button.edit {
 }
 
 .color {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     background: red;
-    border: 2px solid #e6e7e9;
     border-radius: 8px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, .4);
 }

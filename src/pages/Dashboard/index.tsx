@@ -31,7 +31,9 @@ function Dashboard() {
       <div className="breadcrumb">
         <Link to={'/home/dashboard'}>Dashboard</Link>
       </div>
-      <h1>Dashboard</h1>
+      <div className="header-page">
+        <h1>Categorias</h1>
+      </div>
       <div className="chats-dashboard">
         <Chart
           options={data.options}
