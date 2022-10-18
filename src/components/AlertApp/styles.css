@@ -1,0 +1,38 @@
+.box-alert {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    background-color: #e72e4b;
+    padding: 16px;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.modal-alert {
+    background: red;
+}
+
+.icon-alert {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.icon-alert button {
+    background: transparent;
+}
+
+.body-alert {
+    color: #fff;
+}
+
+.body-alert p:first-child {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.body-alert p:last-child {
+    font-weight: 400;
+    font-size: 14px;
+}

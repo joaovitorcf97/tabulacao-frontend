@@ -32,7 +32,7 @@ function Dashboard() {
         <Link to={'/home/dashboard'}>Dashboard</Link>
       </div>
       <div className="header-page">
-        <h1>Categorias</h1>
+        <h1>Dashboard</h1>
       </div>
       <div className="chats-dashboard">
         <Chart
