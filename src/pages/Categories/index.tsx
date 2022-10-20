@@ -1,9 +1,10 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { FiEdit, FiPlusCircle, FiXCircle } from "react-icons/fi";
+import { FiEdit, FiPlusCircle, FiTrash2, FiXCircle } from "react-icons/fi";
 import { IoIosArrowForward } from "react-icons/io";
 import Modal from 'react-modal';
 import { Link } from "react-router-dom";
+import { AlertApp } from "../../components/AlertApp";
 import { NavBar } from "../../Navbar";
 
 import { api } from "../../services/api";
@@ -12,19 +13,20 @@ import './styles.css';
 Modal.setAppElement('#root');
 
 interface ICategory {
-  id: String;
-  name: String;
-  cor: String;
-  adminId: String;
+  id: string;
+  name: string;
+  cor: string;
+  adminId: string;
   created_at: Date;
 }
 
 function Categories() {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
-  const [color, setCoLor] = useState('504bfe');
+  const [color, setColor] = useState('#001122');
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [hasError, setError] = useState(false);
 
   const acessToken = localStorage.getItem('accessToken');
   const authorization = {
@@ -45,6 +47,8 @@ function Categories() {
   function closeModal() {
     setModalIsOpen(false);
     setId('0');
+    setName('');
+    setError(false);
   }
 
   useEffect(() => {
@@ -64,14 +68,23 @@ function Categories() {
     try {
       if (id === '0') {
         await api.post('/category/create/', data, authorization);
-
+        closeModal();
       } else {
         await api.put(`/category/update/${id}`, data, authorization);
+        closeModal();
       }
+    } catch (error) {
+      setError(true);
+    }
+  }
+
+  async function deleteCategory(id: string) {
+    try {
+      await api.delete(`/category/delete/${id}`, authorization);
+      setCategories(categories.filter(category => category.id !== id));
     } catch (error) {
       alert('Faild! try again!');
     }
-    closeModal();
   }
 
   async function loadCategory(id: string) {
@@ -80,15 +93,20 @@ function Categories() {
       const response = await api.get(`/category/find-one/${id}`, authorization);
       setId(response.data.id);
       setName(response.data.name);
-      setCoLor(response.data.cor);
+      setColor(response.data.cor);
     } catch (error) {
       alert('Faild! try again!');
-
     }
+  }
+
+  function closeError() {
+    console.log('Erro');
+    setError(false);
   }
 
   return (
     <div className='container'>
+
       <NavBar />
       <div className="container-category">
         <div className="breadcrumb">
@@ -113,7 +131,8 @@ function Categories() {
           closeTimeoutMS={300}
         >
           <div className="modal-header">
-            <h2>Criar nova categoria</h2>
+            {hasError ? <AlertApp text='Categoria já existe' click={closeError} /> : null}
+            <h2>{id === '0' ? 'Criar nova' : 'Atualizar'} categoria</h2>
             <button onClick={closeModal}>
               <FiXCircle size={24} color='#7f808b' />
             </button>
@@ -133,9 +152,9 @@ function Categories() {
               <span>Selecione uma cor</span>
               <input
                 required
-                value={id !== '0' ? color : '#000000'}
+                value={color}
                 type="color"
-                onChange={e => setCoLor(e.target.value)}
+                onChange={e => setColor(e.target.value)}
               />
             </div>
 
@@ -147,7 +166,7 @@ function Categories() {
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Cor</p></div>
             <div className="column"><p>Criado em</p></div>
-            <div className="column"><p>Editar</p></div>
+            <div className="column"><p></p></div>
           </div>
 
           {
@@ -161,8 +180,11 @@ function Categories() {
                   <p>{moment(category.created_at).format('DD/MM/YYYY HH:mm')}</p>
                 </div>
                 <div className="column">
-                  <button className="edit" onClick={() => openModal(category.id.toString())}>
+                  <button className="edit" onClick={() => openModal(category.id)}>
                     <FiEdit size={20} color='#83879a' />
+                  </button>
+                  <button className="edit" onClick={() => deleteCategory(category.id)}>
+                    <FiTrash2 size={20} color='#83879a' />
                   </button>
                 </div>
               </div>

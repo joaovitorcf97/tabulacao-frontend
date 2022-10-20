@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
+import { FiXCircle } from 'react-icons/fi';
 import { MdOutlineError } from 'react-icons/md';
 import './styles.css';
 
-function AlertApp() {
+function AlertApp({ text, click }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 1.1 }}
@@ -14,8 +15,13 @@ function AlertApp() {
         <MdOutlineError size={34} color='#fff' />
       </div>
       <div className="body-alert">
-        <p>Erro ao realizar login</p>
+        <p>{text}</p>
         <p>Tente novamente</p>
+      </div>
+      <div className="button-alert">
+        <button onClick={click}>
+          <FiXCircle size={20} color="#ffffff" />
+        </button>
       </div>
     </motion.div>
   );

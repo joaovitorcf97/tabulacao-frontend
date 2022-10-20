@@ -6,7 +6,7 @@
     padding: 16px;
     border-radius: 8px;
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 3fr 1fr;
 }
 
 .modal-alert {
@@ -16,7 +16,7 @@
 .icon-alert {
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .icon-alert button {
@@ -35,4 +35,20 @@
 .body-alert p:last-child {
     font-weight: 400;
     font-size: 14px;
+}
+
+.button-alert {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button-alert button {
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
