@@ -7,7 +7,7 @@ function NoMatch() {
       <span>Ooops.. &#128557;</span>
       <h1>404</h1>
       <p>Pagina não encontrada</p>
-      <Link to={'/home/dashboard'} >
+      <Link to={'/dashboard'} >
         Voltar para a Dashboard
       </Link>
     </div>

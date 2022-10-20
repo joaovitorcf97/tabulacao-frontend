@@ -26,23 +26,14 @@ function Login() {
       localStorage.setItem('email', email);
       localStorage.setItem('accessToken', response.data);
 
-      navigate('/home/dashboard/');
+      navigate('/dashboard/');
     } catch (error) {
       setError(true);
     }
   }
-
-  function closeAlert() {
-    console.log('teste');
-  }
-
   return (
     <div className="container-login">
       {hasError ? <AlertApp /> : null}
-      <div className="container-left">
-        <h1>Logo</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-      </div>
       <div className="container-right">
         <form onSubmit={login} className="form">
           <h2>Login</h2>

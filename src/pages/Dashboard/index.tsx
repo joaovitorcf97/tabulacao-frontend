@@ -1,5 +1,6 @@
 import Chart from "react-apexcharts";
 import { Link } from 'react-router-dom';
+import { NavBar } from "../../Navbar";
 import './styles.css';
 
 function Dashboard() {
@@ -27,29 +28,33 @@ function Dashboard() {
 
 
   return (
-    <div className="container-users">
-      <div className="breadcrumb">
-        <Link to={'/home/dashboard'}>Dashboard</Link>
-      </div>
-      <div className="header-page">
-        <h1>Dashboard</h1>
-      </div>
-      <div className="chats-dashboard">
-        <Chart
-          options={data.options}
-          series={data.series}
-          type="bar"
-          width="500"
-        />
-        <Chart options={data2.options} series={data2.series} type="donut" width="380" />
-        <Chart
-          options={data.options}
-          series={data.series}
-          type="line"
-          width="500"
-        />
+    <div className='container'>
+      <NavBar />
+      <div className="container-users">
+        <div className="breadcrumb">
+          <Link to={'/home/dashboard'}>Dashboard</Link>
+        </div>
+        <div className="header-page">
+          <h1>Dashboard</h1>
+        </div>
+        <div className="chats-dashboard">
+          <Chart
+            options={data.options}
+            series={data.series}
+            type="bar"
+            width="500"
+          />
+          <Chart options={data2.options} series={data2.series} type="donut" width="380" />
+          <Chart
+            options={data.options}
+            series={data.series}
+            type="line"
+            width="500"
+          />
+        </div>
       </div>
     </div>
+
   );
 }
 

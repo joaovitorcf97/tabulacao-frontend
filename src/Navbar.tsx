@@ -1,7 +1,7 @@
 import { BiCategory } from 'react-icons/bi';
 import { CgLogOut } from 'react-icons/cg';
 import { FiHome, FiList, FiPlusCircle, FiSettings, FiTrello, FiUsers } from 'react-icons/fi';
-import { Link, useMatch, useResolvedPath } from 'react-router-dom';
+import { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 
 function CustonLink({ to, children, ...props }: any) {
   const resolvePath = useResolvedPath(to);
@@ -25,11 +25,11 @@ function SubCustonLink({ to, children, ...props }: any) {
         {children}
       </Link>
       <ul>
-        <CustonLink to='/home/tabulacao'>
+        <CustonLink to='/tabulacao'>
           <FiPlusCircle size={20} color={isActive ? '#fff' : '646667'} />
           <p>Criar</p>
         </CustonLink>
-        <CustonLink to='/home/list'>
+        <CustonLink to='/list'>
           <FiList size={20} color="#646667" />
           <p>Listar</p>
         </CustonLink>
@@ -39,6 +39,17 @@ function SubCustonLink({ to, children, ...props }: any) {
 }
 
 function NavBar() {
+  const navigate = useNavigate();
+
+  async function logout() {
+    try {
+      localStorage.clear();
+      navigate('/');
+    } catch (erro) {
+      alert('Error');
+    }
+  }
+
   return (
     <div className="container-dashboard-left">
       <div className='profile-info'>
@@ -51,23 +62,23 @@ function NavBar() {
 
 
       <ul className="sidebar">
-        <CustonLink to='/home/dashboard'>
+        <CustonLink to='/dashboard'>
           <FiHome size={20} color="#646667" />
           <p>Dashboard</p>
         </CustonLink>
-        <SubCustonLink to='/home/tabulacao'>
+        <SubCustonLink to='/tabulacao'>
           <FiTrello size={20} color="#646667" />
           <p>Tabulação</p>
         </SubCustonLink>
-        <CustonLink to='/home/categories'>
+        <CustonLink to='/categories'>
           <BiCategory size={20} color="#646667" />
           <p>Categorias</p>
         </CustonLink>
-        <CustonLink to='/home/users'>
+        <CustonLink to='/users'>
           <FiUsers size={20} color="#646667" />
           <p>usuários</p>
         </CustonLink>
-        <CustonLink to='/home/settings'>
+        <CustonLink to='/settings'>
           <FiSettings size={20} color="#646667" />
           <p>Configuração</p>
         </CustonLink>
@@ -75,7 +86,7 @@ function NavBar() {
 
 
       <div className='logout'>
-        <Link to={'/'}>
+        <Link onClick={() => logout()} to={'/'}>
           <CgLogOut size={20} color="#646667" />
           <p>Sair</p>
         </Link>
