@@ -1,7 +1,15 @@
+import { useEffect, useState } from 'react';
 import { BiCategory } from 'react-icons/bi';
 import { CgLogOut } from 'react-icons/cg';
 import { FiHome, FiList, FiPlusCircle, FiSettings, FiTrello, FiUsers } from 'react-icons/fi';
 import { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
+import { api } from './services/api';
+
+interface IToken {
+  email: string;
+  exp: number;
+  sub: string;
+}
 
 function CustonLink({ to, children, ...props }: any) {
   const resolvePath = useResolvedPath(to);
@@ -39,7 +47,40 @@ function SubCustonLink({ to, children, ...props }: any) {
 }
 
 function NavBar() {
+  const [id, setId] = useState('');
+  const [initials, setInitials] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
+
+  const acessToken = localStorage.getItem('accessToken');
+  const authorization = {
+    headers: {
+      'Authorization': `Bearer ${acessToken}`,
+    }
+  };
+
+  const token = localStorage.getItem('id');
+
+  function initialsName(name: string) {
+    const arrayName = name.split(' ');
+    const first = arrayName[0][0];
+    const second = arrayName[1][0];
+    const result = `${first}${second}`;
+
+    setInitials(result);
+  }
+
+  useEffect(() => {
+    setId(token!);
+
+    api.get(`/admin/find-one/${id}`, authorization)
+      .then(response => {
+        setEmail(response.data.email);
+        setName(response.data.name);
+        initialsName(response.data.name);
+      });
+  },);
 
   async function logout() {
     try {
@@ -54,10 +95,10 @@ function NavBar() {
     <div className="container-dashboard-left">
       <div className='profile-info'>
         <div className='profile'>
-          <p>JV</p>
+          <p>{initials}</p>
         </div>
-        <p className='name'>João Vitor</p>
-        <p className='role'>Admin</p>
+        <p className='name'>{name}</p>
+        <p className='role'>{email}</p>
       </div>
 
 
@@ -97,4 +138,8 @@ function NavBar() {
 }
 
 export { NavBar };
+
+function jwt_decode(token: string): IToken {
+  throw new Error('Function not implemented.');
+}
 

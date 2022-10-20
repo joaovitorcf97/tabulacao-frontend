@@ -6,7 +6,7 @@ function NoMatch() {
     <div className="no-match">
       <span>Ooops.. &#128557;</span>
       <h1>404</h1>
-      <p>Pagina não encontrada</p>
+      <p>Página não encontrada</p>
       <Link to={'/dashboard'} >
         Voltar para a Dashboard
       </Link>

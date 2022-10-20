@@ -106,7 +106,6 @@ function Categories() {
 
   return (
     <div className='container'>
-
       <NavBar />
       <div className="container-category">
         <div className="breadcrumb">

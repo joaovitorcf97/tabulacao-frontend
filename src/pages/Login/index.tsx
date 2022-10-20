@@ -1,3 +1,4 @@
+import jwt_decode from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertApp } from '../../components/AlertApp';
@@ -5,7 +6,14 @@ import '../../components/AlertApp/styles.css';
 import { api } from '../../services/api';
 import './styles.css';
 
+interface IToken {
+  email: string;
+  exp: number;
+  sub: string;
+}
+
 function Login() {
+  const [id, setId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hasError, setError] = useState(false);
@@ -16,6 +24,7 @@ function Login() {
     e.preventDefault();
 
     const data = {
+      id,
       email,
       password,
     };
@@ -25,6 +34,12 @@ function Login() {
 
       localStorage.setItem('email', email);
       localStorage.setItem('accessToken', response.data);
+
+      const token = localStorage.getItem('accessToken');
+      if (token !== null) {
+        const decoded: IToken = jwt_decode(token);
+        localStorage.setItem('id', decoded.sub);
+      }
 
       navigate('/dashboard/');
     } catch (error) {

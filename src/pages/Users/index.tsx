@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { FiEdit, FiPlusCircle, FiXCircle } from 'react-icons/fi';
+import { FiEdit, FiPlusCircle, FiTrash2, FiXCircle } from 'react-icons/fi';
 import { IoIosArrowForward } from 'react-icons/io';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
@@ -12,14 +12,19 @@ import './styles.css';
 Modal.setAppElement('#root');
 
 interface IUser {
-  id: String;
-  name: String;
-  email: String;
-  adminId: String;
+  id: string;
+  name: string;
+  email: string;
+  admin: IAdmin;
   created_at: Date;
+}
+interface IAdmin {
+  id: string;
+  name: string;
 }
 
 function Users() {
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,13 +38,33 @@ function Users() {
     }
   };
 
-  function openModal() {
-    console.log('Abrir modal');
+  function openModal(idUse: string) {
     setModalIsOpen(true);
+    if (idUse !== '0') {
+      loadUser(idUse);
+    } else {
+      setId('0');
+      setName('');
+      setEmail('');
+    }
   }
 
   function closeModal() {
     setModalIsOpen(false);
+  }
+
+  function initialsName(name: string) {
+    const arrayName = name.split(' ');
+    const first = arrayName[0][0];
+    let second;
+    let result;
+    if (arrayName.length > 1) {
+      second = arrayName[1][0];
+      return result = `${first}${second}`;
+    }
+
+    result = `${first}`;
+    return result;
   }
 
   useEffect(() => {
@@ -49,14 +74,40 @@ function Users() {
       });
   });
 
-  async function createNewUser(e: React.FormEvent<HTMLFormElement>) {
+  async function createOrUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const data = { name, email, password };
 
     try {
-      await api.post('/user/create', data, authorization);
-      closeModal();
+      if (id === '0') {
+        await api.post('/user/create/', data, authorization);
+        closeModal();
+      } else {
+        await api.put(`/user/update-password/${id}`, data, authorization);
+        closeModal();
+      }
+    } catch (error) {
+      alert('Faild! try again!');
+    }
+  }
+
+  async function loadUser(id: string) {
+
+    try {
+      const response = await api.get(`/users/find-one/${id}`, authorization);
+      setId(response.data.id);
+      setName(response.data.name);
+      setEmail(response.data.email);
+    } catch (error) {
+      alert('Faild! try again!');
+    }
+  }
+
+  async function deleteUser(id: string) {
+    try {
+      await api.delete(`/user/delete-user/${id}`, authorization);
+      setUsers(users.filter(user => user.id !== id));
     } catch (error) {
       alert('Faild! try again!');
     }
@@ -73,7 +124,7 @@ function Users() {
         </div>
         <div className="header-page">
           <h1>Usuários</h1>
-          <button onClick={openModal}>
+          <button onClick={() => openModal('0')}>
             <FiPlusCircle size={16} color='#7f808b' />
             <p>Adicionar usuario</p>
           </button>
@@ -92,12 +143,13 @@ function Users() {
               <FiXCircle size={24} color='#7f808b' />
             </button>
           </div>
-          <form onSubmit={createNewUser} className="form">
+          <form onSubmit={createOrUpdate} className="form">
             <div className='input'>
               <span>Nome completo</span>
               <input
                 required
                 type="text"
+                value={name}
                 placeholder='Exemplo: Maria da Silva Costa'
                 onChange={e => setName(e.target.value)}
               />
@@ -107,6 +159,7 @@ function Users() {
               <input
                 required
                 type="text"
+                value={email}
                 placeholder='Exemplo: maria@email.com'
                 onChange={e => setEmail(e.target.value)}
               />
@@ -128,8 +181,8 @@ function Users() {
           <div className="row first-row">
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Criado em</p></div>
-            <div className="column"><p>Atualizado em</p></div>
-            <div className="column"><p>Editar</p></div>
+            <div className="column"><p>Criado por</p></div>
+            <div className="column"><p></p></div>
           </div>
 
           {
@@ -138,7 +191,7 @@ function Users() {
                 <div className="column">
                   <div className='user'>
                     <div className='user-profile'>
-                      <p>JV</p>
+                      <p>{initialsName(user.name)}</p>
                     </div>
                     <div>
                       <p className='user-name'>{user.name}</p>
@@ -149,10 +202,15 @@ function Users() {
                 <div className="column">
                   <p>{moment(user.created_at).format('DD/MM/YYYY HH:mm')}</p>
                 </div>
-                <div className="column"><p>12/01/2022</p></div>
                 <div className="column">
-                  <button className="edit">
+                  <p>{user.admin.name}</p>
+                </div>
+                <div className="column">
+                  <button onClick={() => openModal(user.id)} className="edit">
                     <FiEdit size={20} color='#83879a' />
+                  </button>
+                  <button onClick={() => deleteUser(user.id)} className="edit">
+                    <FiTrash2 size={20} color='#83879a' />
                   </button>
                 </div>
               </div>
