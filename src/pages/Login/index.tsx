@@ -30,10 +30,11 @@ function Login() {
     };
 
     try {
-      const response = await api.post('/admin/login', data);
+      const response = await api.post('/user/login', data);
 
       localStorage.setItem('email', email);
-      localStorage.setItem('accessToken', response.data);
+      localStorage.setItem('accessToken', response.data.token);
+      localStorage.setItem('role', response.data.user.role);
 
       const token = localStorage.getItem('accessToken');
       if (token !== null) {

@@ -74,7 +74,7 @@ function NavBar() {
   useEffect(() => {
     setId(token!);
 
-    api.get(`/admin/find-one/${id}`, authorization)
+    api.get(`/users/find-one/${id}`, authorization)
       .then(response => {
         setEmail(response.data.email);
         setName(response.data.name);

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
 import { Categories } from './pages/Categories';
@@ -17,6 +18,15 @@ function PrivateRoutes() {
 }
 
 function RoutesApp() {
+  const [roleUser, setRoleUser] = useState('');
+  const role = localStorage.getItem('role');
+
+  useEffect(() => {
+    if (role !== null) {
+      setRoleUser(role);
+    }
+  }, [role]);
+
   return (
     <BrowserRouter>
       <Routes>

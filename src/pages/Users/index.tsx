@@ -15,6 +15,7 @@ interface IUser {
   id: string;
   name: string;
   email: string;
+  role: string;
   admin: IAdmin;
   created_at: Date;
 }
@@ -27,11 +28,13 @@ function Users() {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<IUser[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const accessToken = localStorage.getItem('accessToken');
+  const userId = localStorage.getItem('id');
   const authorization = {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
@@ -46,6 +49,7 @@ function Users() {
       setId('0');
       setName('');
       setEmail('');
+      setRole('');
     }
   }
 
@@ -72,12 +76,12 @@ function Users() {
       .then(response => {
         setUsers(response.data);
       });
-  });
+  }, [accessToken]);
 
   async function createOrUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const data = { name, email, password };
+    const data = { name, email, role, password };
 
     try {
       if (id === '0') {
@@ -99,6 +103,7 @@ function Users() {
       setId(response.data.id);
       setName(response.data.name);
       setEmail(response.data.email);
+      setRole(response.data.role);
     } catch (error) {
       alert('Faild! try again!');
     }
@@ -173,6 +178,17 @@ function Users() {
                 onChange={e => setPassword(e.target.value)}
               />
             </div>
+            <div className='input'>
+              <span>Tipo de usuário</span>
+              <select
+                value={role}
+                onChange={e => setRole(e.target.value)}
+                className="minimal" name="categories"
+                id="categories-select">
+                <option value='USER'>Colaborador</option>
+                <option value='ADMIN'>Administrador</option>
+              </select>
+            </div>
             <button>Criar usuário</button>
           </form>
         </Modal>
@@ -181,7 +197,7 @@ function Users() {
           <div className="row first-row">
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Criado em</p></div>
-            <div className="column"><p>Criado por</p></div>
+            <div className="column"><p>Função</p></div>
             <div className="column"><p></p></div>
           </div>
 
@@ -194,7 +210,13 @@ function Users() {
                       <p>{initialsName(user.name)}</p>
                     </div>
                     <div>
-                      <p className='user-name'>{user.name}</p>
+                      <p className='user-name'>
+                        {user.name}
+                        <span className='you'>
+                          {user.id === userId ? ' (Você)' : null}
+                        </span>
+
+                      </p>
                       <p className='user-role'>{user.email}</p>
                     </div>
                   </div>
@@ -203,15 +225,22 @@ function Users() {
                   <p>{moment(user.created_at).format('DD/MM/YYYY HH:mm')}</p>
                 </div>
                 <div className="column">
-                  <p>{user.admin.name}</p>
+                  <p>{user.role === 'USER' ? 'Colaborador' : 'Administrador'}</p>
                 </div>
                 <div className="column">
                   <button onClick={() => openModal(user.id)} className="edit">
                     <FiEdit size={20} color='#83879a' />
                   </button>
-                  <button onClick={() => deleteUser(user.id)} className="edit">
-                    <FiTrash2 size={20} color='#83879a' />
-                  </button>
+                  {
+                    user.id !== userId
+                      ? <button onClick={() => deleteUser(user.id)} className="edit">
+                        <FiTrash2 size={20} color='#83879a' />
+                      </button>
+                      : null
+
+
+                  }
+
                 </div>
               </div>
             ))
