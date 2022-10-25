@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
 import { Categories } from './pages/Categories';
 import { Dashboard } from './pages/Dashboard';
+import { ListTabubacao } from './pages/ListTabubacao';
 import { Login } from './pages/Login';
 import { NoMatch } from './pages/NoMatch';
 import { Tabulacao } from './pages/Tabulacao';
@@ -18,15 +18,6 @@ function PrivateRoutes() {
 }
 
 function RoutesApp() {
-  const [roleUser, setRoleUser] = useState('');
-  const role = localStorage.getItem('role');
-
-  useEffect(() => {
-    if (role !== null) {
-      setRoleUser(role);
-    }
-  }, [role]);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -36,6 +27,7 @@ function RoutesApp() {
           <Route index element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tabulacao" element={<Tabulacao />} />
+          <Route path="/list" element={<ListTabubacao />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/users" element={<Users />} />
           <Route path='*' element={<NoMatch />} />
