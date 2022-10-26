@@ -27,6 +27,7 @@ function Categories() {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [hasError, setError] = useState(false);
+  const [hasDeleteError, setHasDeleteError] = useState(false);
 
   const acessToken = localStorage.getItem('accessToken');
   const authorization = {
@@ -52,11 +53,16 @@ function Categories() {
   }
 
   useEffect(() => {
-    api.get('/category/find', authorization)
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    await api.get('/category/find', authorization)
       .then(response => {
         setCategories(response.data);
+        console.log('chamando api...');
       });
-  });
+  }
 
   async function createOrUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -68,9 +74,11 @@ function Categories() {
     try {
       if (id === '0') {
         await api.post('/category/create/', data, authorization);
+        fetchData();
         closeModal();
       } else {
         await api.put(`/category/update/${id}`, data, authorization);
+        fetchData();
         closeModal();
       }
     } catch (error) {
@@ -83,7 +91,7 @@ function Categories() {
       await api.delete(`/category/delete/${id}`, authorization);
       setCategories(categories.filter(category => category.id !== id));
     } catch (error) {
-      alert('Faild! try again!');
+      setHasDeleteError(true);
     }
   }
 
@@ -100,12 +108,21 @@ function Categories() {
   }
 
   function closeError() {
-    console.log('Erro');
     setError(false);
+    setHasDeleteError(false);
   }
 
   return (
     <div className='container'>
+      {
+        hasDeleteError
+          ? <AlertApp
+            text='Categoria não pode ser deletada'
+            body='Categoria esta associada a um cliente'
+            click={closeError}
+          />
+          : null
+      }
       <NavBar />
       <div className="container-category">
         <div className="breadcrumb">
@@ -130,7 +147,15 @@ function Categories() {
           closeTimeoutMS={300}
         >
           <div className="modal-header">
-            {hasError ? <AlertApp text='Categoria já existe' click={closeError} /> : null}
+            {
+              hasError
+                ? <AlertApp
+                  text='Categoria já existe'
+                  body='Tente outra'
+                  click={closeError}
+                />
+                : null
+            }
             <h2>{id === '0' ? 'Criar nova' : 'Atualizar'} categoria</h2>
             <button onClick={closeModal}>
               <FiXCircle size={24} color='#7f808b' />

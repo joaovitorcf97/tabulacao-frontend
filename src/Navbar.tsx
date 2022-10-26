@@ -34,11 +34,11 @@ function SubCustonLink({ to, children, ...props }: any) {
       </Link>
       <ul>
         <CustonLink to='/tabulacao'>
-          <FiPlusCircle size={20} color={isActive ? '#fff' : '646667'} />
+          <FiPlusCircle size={18} color={isActive ? '#fff' : '646667'} />
           <p>Criar</p>
         </CustonLink>
         <CustonLink to='/list'>
-          <FiList size={20} color="#646667" />
+          <FiList size={18} color="#646667" />
           <p>Listar</p>
         </CustonLink>
       </ul>
@@ -61,6 +61,7 @@ function NavBar() {
   };
 
   const token = localStorage.getItem('id');
+  const role = localStorage.getItem('role');
 
   function initialsName(name: string) {
     const arrayName = name.split(' ');
@@ -97,30 +98,36 @@ function NavBar() {
         <div className='profile'>
           <p>{initials}</p>
         </div>
-        <p className='name'>{name}</p>
-        <p className='role'>{email}</p>
+        <div className='profile-text'>
+          <p className='name'>{name}</p>
+          <p className='role'>{email}</p>
+        </div>
       </div>
 
 
       <ul className="sidebar">
         <CustonLink to='/dashboard'>
-          <FiHome size={20} color="#646667" />
+          <FiHome size={18} color="#646667" />
           <p>Dashboard</p>
         </CustonLink>
         <SubCustonLink to='/tabulacao'>
-          <FiTrello size={20} color="#646667" />
+          <FiTrello size={18} color="#646667" />
           <p>Tabulação</p>
         </SubCustonLink>
-        <CustonLink to='/categories'>
-          <BiCategory size={20} color="#646667" />
-          <p>Categorias</p>
-        </CustonLink>
-        <CustonLink to='/users'>
-          <FiUsers size={20} color="#646667" />
-          <p>usuários</p>
-        </CustonLink>
+        {
+          role === 'ADMIN' ? <CustonLink to='/categories'>
+            <BiCategory size={18} color="#646667" />
+            <p>Categorias</p>
+          </CustonLink> : null
+        }
+        {
+          role === 'ADMIN' ? <CustonLink to='/users'>
+            <FiUsers size={18} color="#646667" />
+            <p>usuários</p>
+          </CustonLink> : null
+        }
         <CustonLink to='/settings'>
-          <FiSettings size={20} color="#646667" />
+          <FiSettings size={18} color="#646667" />
           <p>Configuração</p>
         </CustonLink>
       </ul>
@@ -128,7 +135,7 @@ function NavBar() {
 
       <div className='logout'>
         <Link onClick={() => logout()} to={'/'}>
-          <CgLogOut size={20} color="#646667" />
+          <CgLogOut size={18} color="#646667" />
           <p>Sair</p>
         </Link>
       </div>
@@ -138,8 +145,4 @@ function NavBar() {
 }
 
 export { NavBar };
-
-function jwt_decode(token: string): IToken {
-  throw new Error('Function not implemented.');
-}
 

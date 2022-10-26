@@ -55,7 +55,14 @@ function Login() {
 
   return (
     <div className="container-login">
-      {hasError ? <AlertApp text="Error ao tentar logar" click={closeError} /> : null}
+      {
+        hasError
+          ? <AlertApp
+            text="Error ao tentar logar"
+            body='Email ou senha incorreto'
+            click={closeError} />
+          : null
+      }
       <div className="container-right">
         <form onSubmit={login} className="form">
           <h2>Login</h2>

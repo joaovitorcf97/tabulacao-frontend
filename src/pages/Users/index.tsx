@@ -152,6 +152,7 @@ function Users() {
             <div className='input'>
               <span>Nome completo</span>
               <input
+                disabled={id === '0' ? false : true}
                 required
                 type="text"
                 value={name}
@@ -162,6 +163,7 @@ function Users() {
             <div className='input'>
               <span>Email</span>
               <input
+                disabled={id === '0' ? false : true}
                 required
                 type="text"
                 value={email}
@@ -172,6 +174,7 @@ function Users() {
             <div className='input'>
               <span>Senha</span>
               <input
+
                 required
                 type="text"
                 placeholder='Senha'
@@ -181,6 +184,7 @@ function Users() {
             <div className='input'>
               <span>Tipo de usuário</span>
               <select
+                disabled={id === '0' ? false : true}
                 value={role}
                 onChange={e => setRole(e.target.value)}
                 className="minimal" name="categories"

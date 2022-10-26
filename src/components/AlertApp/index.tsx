@@ -3,7 +3,7 @@ import { FiXCircle } from 'react-icons/fi';
 import { MdOutlineError } from 'react-icons/md';
 import './styles.css';
 
-function AlertApp({ text, click }: any) {
+function AlertApp({ text, body, click }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 1.1 }}
@@ -16,7 +16,7 @@ function AlertApp({ text, click }: any) {
       </div>
       <div className="body-alert">
         <p>{text}</p>
-        <p>Tente novamente</p>
+        <p>{body}</p>
       </div>
       <div className="button-alert">
         <button onClick={click}>

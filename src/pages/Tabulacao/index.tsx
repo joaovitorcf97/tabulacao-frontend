@@ -1,12 +1,103 @@
+import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { AlertApp } from "../../components/AlertApp";
 import { NavBar } from "../../Navbar";
+import { api } from "../../services/api";
 
 import './styles.css';
 
+interface Iclient {
+  id: string;
+  name: string;
+  phone: string;
+  category: ICategory;
+  user: IUser;
+}
+
+interface ICategory {
+  id: string;
+  name: string;
+  cor: String;
+}
+
+interface IUser {
+  name: string;
+}
+
 function Tabulacao() {
+  const [clients, setClients] = useState<Iclient[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([{ id: '0', name: 'Escolha uma categoria', cor: '' }]);
+  const [categoryId, setCategoryId] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [hasError, setError] = useState(false);
+
+  const idUser = localStorage.getItem('id');
+  const acessToken = localStorage.getItem('accessToken');
+  const authorization = {
+    headers: {
+      'Authorization': `Bearer ${acessToken}`,
+    }
+  };
+
+  useEffect(() => {
+    api.get(`/category/find/`, authorization).then(response => {
+      let arrayCategories = [categories[0], ...response.data];
+      setCategories(arrayCategories);
+    });
+
+    loadClients();
+  }, []);
+
+  async function createClient(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const data = {
+      categoryId,
+      name,
+      phone,
+    };
+
+    try {
+      console.log(categoryId);
+      await api.post('/client/create/', data, authorization);
+      setName('');
+      setPhone('');
+      loadClients();
+    } catch (error) {
+      setError(true);
+    }
+  }
+
+  async function loadClients() {
+    const result = await api.get(`client/find-all?skip=0&take=10`, authorization);
+
+    let arrayClients: Iclient[] = [];
+    result.data.map((client: Iclient, index: number) => {
+      if (idUser === result.data[index].user.id) {
+        console.log(client);
+        arrayClients.push(client);
+      }
+    });
+
+    setClients(arrayClients);
+  }
+
+  function phoneFormat(v: string) {
+    v = v.replace(/\D/g, "");
+    v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+    v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+    return v;
+  }
+
+  function closeError() {
+    setError(false);
+  }
+
   return (
     <div className='container'>
+      {hasError ? <AlertApp text='Escolha uma categoria' click={closeError} /> : null}
       <NavBar />
       <div className="container-users">
         <div className="breadcrumb">
@@ -20,53 +111,73 @@ function Tabulacao() {
 
         <div className="container-tabulacao">
           <div className="container-tabulacao-left">
-            <form className="form">
+            <form onSubmit={createClient} className="form">
               <div className='input'>
                 <span>Nome</span>
-                <input type="text" placeholder='Atendimento' />
+                <input
+                  required
+                  value={name}
+                  type="text"
+                  placeholder='Atendimento'
+                  onChange={e => setName(e.target.value)}
+                />
               </div>
               <div className='input'>
                 <span>Telefone</span>
-                <input type="text" placeholder='(31) 9 9999-9999' />
+                <input
+                  value={phone}
+                  type="text"
+                  placeholder='(31) 9 9999-9999'
+                  onChange={e => setPhone(e.target.value)}
+                />
               </div>
               <div className='input'>
                 <span>Categoria</span>
-                <select className="minimal" name="categories" id="categories-select">
-                  <option value="">Atendimento 1</option>
-                  <option value="">Atendimento 2</option>
-                  <option value="">Atendimento 3</option>
+                <select
+                  className="minimal"
+                  name="categories" id="categories-select"
+                  onChange={e => setCategoryId(e.target.value)}>
+                  {
+                    categories.map((category, index) => (
+                      <option
+                        key={index}
+                        value={category.id}
+                      >
+                        {category.name}
+                      </option>
+                    ))
+                  }
                 </select>
               </div>
               <button>Salvar</button>
             </form>
           </div>
           <div className="container-tabulacao-right">
-            <div className="table">
-              <span>Historico</span>
-              <div className="row first-row">
+            <div className="tabl">
+              <div className="row-tabulacao first-row">
                 <div className="column"><p>Nome</p></div>
                 <div className="column"><p>Categoria</p></div>
                 <div className="column"><p>Telefone</p></div>
-                <div className="column"><p>Criando em</p></div>
               </div>
-              <div className="row">
-                <div className="column"><p>Maria das Graças</p></div>
-                <div className="column"><p>Atendimento</p></div>
-                <div className="column"><p>99999-9999</p></div>
-                <div className="column"><p>12/01/2022</p></div>
-              </div>
-              <div className="row">
-                <div className="column"><p>Maria das Graças</p></div>
-                <div className="column"><p>Atendimento</p></div>
-                <div className="column"><p>99999-9999</p></div>
-                <div className="column"><p>12/01/2022</p></div>
-              </div>
-              <div className="row">
-                <div className="column"><p>Maria das Graças</p></div>
-                <div className="column"><p>Atendimento</p></div>
-                <div className="column"><p>99999-9999</p></div>
-                <div className="column"><p>12/01/2022</p></div>
-              </div>
+
+              {
+                clients.map((client, index) => (
+                  <div key={index} className="row-tabulacao">
+                    <div className="column">
+                      <div className="border-name">
+                        <div className="cicle" style={{ background: `${client.category.cor}` }}></div>
+                        <p>{client.name}</p>
+                      </div>
+                    </div>
+                    <div className="column tabulacao-category">
+                      <p>{client.category.name}</p>
+                    </div>
+                    <div className="column tabulacao-phone">
+                      <p>{phoneFormat(client.phone)}</p>
+                    </div>
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>

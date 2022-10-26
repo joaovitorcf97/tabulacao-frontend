@@ -28,6 +28,7 @@ function ListTabubacao() {
   const [clients, setClients] = useState<Iclient[]>([]);
   const [page, setPage] = useState(0);
 
+  const idUser = localStorage.getItem('id');
   const acessToken = localStorage.getItem('accessToken');
   const authorization = {
     headers: {
@@ -38,7 +39,15 @@ function ListTabubacao() {
   useEffect(() => {
     api.get(`client/find-all?skip=${page}&take=10`, authorization).then(response => {
       if (response.data.length !== 0) {
-        setClients(response.data);
+        let arrayClients: Iclient[] = [];
+        response.data.map((client: Iclient, index: number) => {
+          if (idUser === response.data[index].user.id) {
+            console.log(client);
+            arrayClients.push(client);
+          }
+        });
+
+        setClients(arrayClients);
       } else {
         fetchLessClients();
       }
