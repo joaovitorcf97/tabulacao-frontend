@@ -33,7 +33,6 @@ function Tabulacao() {
   const [phone, setPhone] = useState('');
   const [hasError, setError] = useState(false);
 
-  const idUser = localStorage.getItem('id');
   const acessToken = localStorage.getItem('accessToken');
   const authorization = {
     headers: {
@@ -42,11 +41,8 @@ function Tabulacao() {
   };
 
   useEffect(() => {
-    api.get(`/category/find/`, authorization).then(response => {
-      let arrayCategories = [categories[0], ...response.data];
-      setCategories(arrayCategories);
-    });
-
+    console.log(categoryId);
+    loadCategories();
     loadClients();
   }, []);
 
@@ -64,24 +60,28 @@ function Tabulacao() {
       await api.post('/client/create/', data, authorization);
       setName('');
       setPhone('');
+      setCategories([categories[0]]);
+      setCategoryId('');
+      loadCategories();
       loadClients();
+      setError(false);
+
     } catch (error) {
+      console.log(data.categoryId);
       setError(true);
     }
   }
 
-  async function loadClients() {
-    const result = await api.get(`client/find-all?skip=0&take=10`, authorization);
-
-    let arrayClients: Iclient[] = [];
-    result.data.map((client: Iclient, index: number) => {
-      if (idUser === result.data[index].user.id) {
-        console.log(client);
-        arrayClients.push(client);
-      }
+  async function loadCategories() {
+    api.get(`/category/find/`, authorization).then(response => {
+      let arrayCategories = [categories, ...response.data];
+      setCategories(arrayCategories);
     });
+  }
 
-    setClients(arrayClients);
+  async function loadClients() {
+    const result = await api.get(`client/me?skip=0&take=10`, authorization);
+    setClients(result.data.data);
   }
 
   function phoneFormat(v: string) {

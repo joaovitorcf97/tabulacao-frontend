@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
+
 import { Link } from "react-router-dom";
 import { NavBar } from "../../Navbar";
 import { api } from "../../services/api";
@@ -13,6 +14,7 @@ interface Iclient {
   phone: string;
   category: ICategory;
   user: IUser;
+  created_at: string;
 }
 
 interface ICategory {
@@ -24,11 +26,19 @@ interface IUser {
   name: string;
 }
 
+interface Pagination {
+  lastPage: number;
+  currentPage: number;
+  perPage: number;
+  prev: number;
+  next: number;
+}
+
 function ListTabubacao() {
   const [clients, setClients] = useState<Iclient[]>([]);
-  const [page, setPage] = useState(0);
+  const [pagination, setPagination] = useState<Pagination>();
 
-  const idUser = localStorage.getItem('id');
+  const role = localStorage.getItem('role');
   const acessToken = localStorage.getItem('accessToken');
   const authorization = {
     headers: {
@@ -37,30 +47,32 @@ function ListTabubacao() {
   };
 
   useEffect(() => {
-    api.get(`client/find-all?skip=${page}&take=10`, authorization).then(response => {
-      if (response.data.length !== 0) {
-        let arrayClients: Iclient[] = [];
-        response.data.map((client: Iclient, index: number) => {
-          if (idUser === response.data[index].user.id) {
-            console.log(client);
-            arrayClients.push(client);
-          }
-        });
-
-        setClients(arrayClients);
-      } else {
-        fetchLessClients();
-      }
-    });
-  }, [page]);
+    loadClients(1);
+  }, []);
 
   async function fetchMoreClients() {
-    setPage(page + 10);
+    if (pagination?.next !== null) {
+      loadClients(pagination?.currentPage! + 1);
+    }
   }
   async function fetchLessClients() {
-    if (page > 0) {
-      setPage(page - 10);
+    if (pagination?.prev !== null) {
+      loadClients(pagination?.currentPage! - 1);
     }
+  }
+
+  async function goPage(goPage: number) {
+    api.get(`client/${role === 'ADMIN' ? 'find-all' : 'me'}?page=${goPage}`, authorization).then(response => {
+      setClients(response.data.data);
+      setPagination(response.data.meta);
+    });
+  }
+
+  async function loadClients(goPage: number) {
+    api.get(`client/${role === 'ADMIN' ? 'find-all' : 'me'}?page=${goPage}`, authorization).then(response => {
+      setClients(response.data.data);
+      setPagination(response.data.meta);
+    });
   }
 
   function phoneFormat(v: string) {
@@ -81,22 +93,13 @@ function ListTabubacao() {
         </div>
         <div className="header-page">
           <h1>Clientes</h1>
-          <div className="pagination-button">
-            <button onClick={fetchLessClients}>
-              <MdArrowBackIos color="#ffffff" /> Anterior
-            </button>
-            <div className="pagination-colum"></div>
-            <button onClick={fetchMoreClients}>
-              Proximo <MdArrowForwardIos color="#ffffff" />
-            </button>
-          </div>
         </div>
         <div className="table">
           <div className="row first-row">
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Categoria</p></div>
             <div className="column"><p>Telefone</p></div>
-            <div className="column"><p>Criado por</p></div>
+            <div className="column"><p>Criado em</p></div>
           </div>
 
           {
@@ -115,14 +118,32 @@ function ListTabubacao() {
                   <p>{phoneFormat(client.phone)}</p>
                 </div>
                 <div className="column">
-                  <p>{client.user.name}</p>
+                  <p>{client.created_at}</p>
                 </div>
               </div>
             ))
           }
         </div>
 
+        <div className="pagination-button">
+          {
+            pagination?.prev !== null
+              ? <button className="button-pagination" onClick={fetchLessClients}>
+                <MdArrowBackIos color="#fff" /> Anterior
+              </button> : null}
+          <div className="pages">
 
+            {
+              [...Array(pagination?.lastPage)].map((_, index) => <button className={pagination?.currentPage === index + 1 ? 'page-active' : ''} onClick={() => goPage(index + 1)}>{index + 1}</button>)
+            }
+          </div>
+          {
+            pagination?.next !== null
+              ? <button className="button-pagination" onClick={fetchMoreClients}>
+                Proximo <MdArrowForwardIos color="#fff" />
+              </button> : null
+          }
+        </div>
       </div>
     </div>
   );

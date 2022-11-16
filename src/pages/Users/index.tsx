@@ -32,6 +32,7 @@ function Users() {
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<IUser[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
 
   const accessToken = localStorage.getItem('accessToken');
   const userId = localStorage.getItem('id');
@@ -55,6 +56,7 @@ function Users() {
 
   function closeModal() {
     setModalIsOpen(false);
+    setModalDeleteIsOpen(false);
   }
 
   function initialsName(name: string) {
@@ -72,11 +74,15 @@ function Users() {
   }
 
   useEffect(() => {
+    loadUsers();
+  }, []);
+
+  async function loadUsers() {
     api.get('/users/find', authorization)
       .then(response => {
         setUsers(response.data);
       });
-  }, [accessToken]);
+  }
 
   async function createOrUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -86,9 +92,11 @@ function Users() {
     try {
       if (id === '0') {
         await api.post('/user/create/', data, authorization);
+        loadUsers();
         closeModal();
       } else {
         await api.put(`/user/update-password/${id}`, data, authorization);
+        loadUsers();
         closeModal();
       }
     } catch (error) {
@@ -109,7 +117,13 @@ function Users() {
     }
   }
 
+  function openDeleteModal(id: string) {
+    setModalDeleteIsOpen(true);
+    loadUser(id);
+  }
+
   async function deleteUser(id: string) {
+    loadUser(id);
     try {
       await api.delete(`/user/delete-user/${id}`, authorization);
       setUsers(users.filter(user => user.id !== id));
@@ -117,6 +131,7 @@ function Users() {
       alert('Faild! try again!');
     }
   }
+
 
   return (
     <div className='container'>
@@ -134,6 +149,7 @@ function Users() {
             <p>Adicionar usuario</p>
           </button>
         </div>
+
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
@@ -143,7 +159,7 @@ function Users() {
           closeTimeoutMS={300}
         >
           <div className="modal-header">
-            <h2>Criar usuário</h2>
+            <h2>{id === '0' ? 'Criar usuário' : 'Atualizar usuário'}</h2>
             <button onClick={closeModal}>
               <FiXCircle size={24} color='#7f808b' />
             </button>
@@ -152,7 +168,6 @@ function Users() {
             <div className='input'>
               <span>Nome completo</span>
               <input
-                disabled={id === '0' ? false : true}
                 required
                 type="text"
                 value={name}
@@ -163,7 +178,7 @@ function Users() {
             <div className='input'>
               <span>Email</span>
               <input
-                disabled={id === '0' ? false : true}
+
                 required
                 type="text"
                 value={email}
@@ -174,8 +189,7 @@ function Users() {
             <div className='input'>
               <span>Senha</span>
               <input
-
-                required
+                required={id === '0' ? true : false}
                 type="text"
                 placeholder='Senha'
                 onChange={e => setPassword(e.target.value)}
@@ -193,7 +207,7 @@ function Users() {
                 <option value='ADMIN'>Administrador</option>
               </select>
             </div>
-            <button>Criar usuário</button>
+            <button>{id === '0' ? 'Criar usuário' : 'Salvar'}</button>
           </form>
         </Modal>
 
@@ -226,7 +240,7 @@ function Users() {
                   </div>
                 </div>
                 <div className="column">
-                  <p>{moment(user.created_at).format('DD/MM/YYYY HH:mm')}</p>
+                  <p>{moment(user.created_at).format('DD/MM/YYYY')}</p>
                 </div>
                 <div className="column">
                   <p>{user.role === 'USER' ? 'Colaborador' : 'Administrador'}</p>
@@ -235,14 +249,40 @@ function Users() {
                   <button onClick={() => openModal(user.id)} className="edit">
                     <FiEdit size={20} color='#83879a' />
                   </button>
+
                   {
+
                     user.id !== userId
-                      ? <button onClick={() => deleteUser(user.id)} className="edit">
-                        <FiTrash2 size={20} color='#83879a' />
-                      </button>
+                      ?
+                      <>
+                        <Modal
+                          isOpen={modalDeleteIsOpen}
+                          onRequestClose={closeModal}
+                          contentLabel='Exemplo Modal'
+                          overlayClassName='modal-overlay'
+                          className='modal-content'
+                          closeTimeoutMS={300}
+                        >
+                          <div className="modal-header">
+                            <h2>Deletar usuário(a)?</h2>
+                            <button onClick={closeModal}>
+                              <FiXCircle size={24} color='#7f808b' />
+                            </button>
+                          </div>
+                          <div className='text-delete'>
+                            <p>Tem certeza que deseja deletar o(a) usuário(a) <span className='user-delete'>{name}</span> permanentemente?</p>
+                          </div>
+
+                          <div className='buttons-delete'>
+                            <button onClick={() => setModalDeleteIsOpen(false)} className='cancel'>Cancelar</button>
+                            <button onClick={() => deleteUser(user.id)} className='confirm'>Deletar  <FiTrash2 size={20} color='#fff' /></button>
+                          </div>
+                        </Modal>
+                        <button className="edit" onClick={() => openDeleteModal(user.id)}>
+                          <FiTrash2 size={20} color='#83879a' />
+                        </button>
+                      </>
                       : null
-
-
                   }
 
                 </div>
