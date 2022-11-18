@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
-import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 
 import { Link } from "react-router-dom";
+import Pagination from "../../components/Pagination";
 import { NavBar } from "../../Navbar";
 import { api } from "../../services/api";
 
 import './styles.css';
+
 
 interface Iclient {
   id: string;
@@ -26,17 +27,10 @@ interface IUser {
   name: string;
 }
 
-interface Pagination {
-  lastPage: number;
-  currentPage: number;
-  perPage: number;
-  prev: number;
-  next: number;
-}
-
-function ListTabubacao() {
+function ListTabulacao() {
   const [clients, setClients] = useState<Iclient[]>([]);
-  const [pagination, setPagination] = useState<Pagination>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(0);
 
   const role = localStorage.getItem('role');
   const acessToken = localStorage.getItem('accessToken');
@@ -47,34 +41,16 @@ function ListTabubacao() {
   };
 
   useEffect(() => {
-    loadClients(1);
-  }, []);
-
-  async function fetchMoreClients() {
-    if (pagination?.next !== null) {
-      loadClients(pagination?.currentPage! + 1);
-    }
-  }
-  async function fetchLessClients() {
-    if (pagination?.prev !== null) {
-      loadClients(pagination?.currentPage! - 1);
-    }
-  }
-
-  async function goPage(goPage: number) {
-    api.get(`client/${role === 'ADMIN' ? 'find-all' : 'me'}?page=${goPage}`, authorization).then(response => {
-      setClients(response.data.data);
-      setPagination(response.data.meta);
-    });
-  }
+    loadClients(currentPage);
+  }, [currentPage]);
 
   async function loadClients(goPage: number) {
     api.get(`client/${role === 'ADMIN' ? 'find-all' : 'me'}?page=${goPage}`, authorization).then(response => {
       setClients(response.data.data);
-      setPagination(response.data.meta);
+      setCurrentPage(response.data.meta.currentPage);
+      setLastPage(response.data.meta.lastPage);
     });
   }
-
   function phoneFormat(v: string) {
     v = v.replace(/\D/g, "");
     v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
@@ -124,30 +100,16 @@ function ListTabubacao() {
             ))
           }
         </div>
-
-        <div className="pagination-button">
-          {
-            pagination?.prev !== null
-              ? <button className="button-pagination" onClick={fetchLessClients}>
-                <MdArrowBackIos color="#fff" /> Anterior
-              </button> : null}
-          <div className="pages">
-
-            {
-              [...Array(pagination?.lastPage)].map((_, index) => <button className={pagination?.currentPage === index + 1 ? 'page-active' : ''} onClick={() => goPage(index + 1)}>{index + 1}</button>)
-            }
-          </div>
-          {
-            pagination?.next !== null
-              ? <button className="button-pagination" onClick={fetchMoreClients}>
-                Proximo <MdArrowForwardIos color="#fff" />
-              </button> : null
-          }
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          lastPage={lastPage}
+          maxLength={7}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );
 }
 
-export { ListTabubacao };
+export { ListTabulacao };
 

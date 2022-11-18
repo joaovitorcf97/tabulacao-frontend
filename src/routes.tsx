@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom
 
 import { Categories } from './pages/Categories';
 import { Dashboard } from './pages/Dashboard';
-import { ListTabubacao } from './pages/ListTabubacao';
+import { ListTabulacao } from './pages/ListTabubacao';
 import { Login } from './pages/Login';
 import { NoMatch } from './pages/NoMatch';
 import { Tabulacao } from './pages/Tabulacao';
@@ -27,7 +27,7 @@ function RoutesApp() {
           <Route index element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tabulacao" element={<Tabulacao />} />
-          <Route path="/list" element={<ListTabubacao />} />
+          <Route path="/list" element={<ListTabulacao />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/users" element={<Users />} />
           <Route path='*' element={<NoMatch />} />

@@ -1,0 +1,7 @@
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+
+    margin-top: 16px;
+}
