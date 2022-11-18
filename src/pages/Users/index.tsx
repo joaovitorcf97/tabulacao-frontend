@@ -233,7 +233,6 @@ function Users() {
                         <span className='you'>
                           {user.id === userId ? ' (Você)' : null}
                         </span>
-
                       </p>
                       <p className='user-role'>{user.email}</p>
                     </div>

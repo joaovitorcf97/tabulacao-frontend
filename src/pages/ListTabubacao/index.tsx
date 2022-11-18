@@ -1,3 +1,4 @@
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 
@@ -71,16 +72,17 @@ function ListTabulacao() {
           <h1>Clientes</h1>
         </div>
         <div className="table">
-          <div className="row first-row">
+          <div className="row-clients first-row">
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Categoria</p></div>
             <div className="column"><p>Telefone</p></div>
             <div className="column"><p>Criado em</p></div>
+            <div className="column"><p>Criado por</p></div>
           </div>
 
           {
             clients.map((client, index) => (
-              <div key={index} className="row">
+              <div key={index} className="row-clients">
                 <div className="column">
                   <div className="border-name">
                     <div className="cicle" style={{ background: `${client.category.cor}` }}></div>
@@ -94,7 +96,10 @@ function ListTabulacao() {
                   <p>{phoneFormat(client.phone)}</p>
                 </div>
                 <div className="column">
-                  <p>{client.created_at}</p>
+                  <p>{moment(client.created_at).format('DD/MM/YYYY')}</p>
+                </div>
+                <div className="column">
+                  <p>{client.user !== null ? client.user.name : 'Usuário não identificado'}</p>
                 </div>
               </div>
             ))
