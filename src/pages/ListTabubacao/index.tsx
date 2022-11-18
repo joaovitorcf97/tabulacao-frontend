@@ -76,8 +76,8 @@ function ListTabulacao() {
             <div className="column"><p>Nome</p></div>
             <div className="column"><p>Categoria</p></div>
             <div className="column"><p>Telefone</p></div>
-            <div className="column"><p>Criado em</p></div>
             <div className="column"><p>Criado por</p></div>
+            <div className="column"><p>Criado em</p></div>
           </div>
 
           {
@@ -96,10 +96,10 @@ function ListTabulacao() {
                   <p>{phoneFormat(client.phone)}</p>
                 </div>
                 <div className="column">
-                  <p>{moment(client.created_at).format('DD/MM/YYYY')}</p>
+                  <p>{client.user !== null ? client.user.name : 'Usuário não identificado'}</p>
                 </div>
                 <div className="column">
-                  <p>{client.user !== null ? client.user.name : 'Usuário não identificado'}</p>
+                  <p>{moment(client.created_at).format('DD/MM/YYYY')}</p>
                 </div>
               </div>
             ))
