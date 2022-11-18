@@ -3,13 +3,9 @@ import { BiCategory } from 'react-icons/bi';
 import { CgLogOut } from 'react-icons/cg';
 import { FiHome, FiList, FiPlusCircle, FiSettings, FiTrello, FiUsers } from 'react-icons/fi';
 import { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
-import { api } from './services/api';
 
-interface IToken {
-  email: string;
-  exp: number;
-  sub: string;
-}
+import logo from './assets/logo.svg';
+import { api } from './services/api';
 
 function CustonLink({ to, children, ...props }: any) {
   const resolvePath = useResolvedPath(to);
@@ -94,7 +90,7 @@ function NavBar() {
 
   return (
     <div className="container-dashboard-left">
-      <div className='profile-info'>
+      {/* <div className='profile-info'>
         <div className='profile'>
           <p>{initials}</p>
         </div>
@@ -102,9 +98,12 @@ function NavBar() {
           <p className='name'>{name}</p>
           <p className='role'>{email}</p>
         </div>
+      </div> */}
+
+      <div className='logo'>
+        <img src={logo} alt="logo Tabulação" />
+        <h1>Tabulação</h1>
       </div>
-
-
       <ul className="sidebar">
         <CustonLink to='/dashboard'>
           <FiHome size={18} color="#646667" />

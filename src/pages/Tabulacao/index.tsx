@@ -7,6 +7,11 @@ import { api } from "../../services/api";
 
 import './styles.css';
 
+interface IUser {
+  name: string;
+  email: string;
+}
+
 interface Iclient {
   id: string;
   name: string;
@@ -26,14 +31,17 @@ interface IUser {
 }
 
 function Tabulacao() {
+  const [user, setUser] = useState<IUser>();
   const [clients, setClients] = useState<Iclient[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([{ id: '0', name: 'Escolha uma categoria', cor: '' }]);
   const [categoryId, setCategoryId] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [hasError, setError] = useState(false);
+  const role = localStorage.getItem('role');
 
   const acessToken = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('id');
   const authorization = {
     headers: {
       'Authorization': `Bearer ${acessToken}`,
@@ -45,6 +53,10 @@ function Tabulacao() {
     loadCategories();
     loadClients();
   }, []);
+
+  useEffect(() => {
+    loadUser(token!);
+  }, [token]);
 
   async function createClient(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -80,8 +92,17 @@ function Tabulacao() {
   }
 
   async function loadClients() {
-    const result = await api.get(`client/me?skip=0&take=10`, authorization);
+    const result = await api.get(`client/${role === 'ADMIN' ? 'find-all' : 'me'}?page=1`, authorization);
     setClients(result.data.data);
+    console.log(result.data.data);
+  }
+
+  async function loadUser(id: string) {
+    await api.get(`/users/find-one/${id}`, authorization)
+      .then(response => {
+        console.log(response.data);
+        setUser(response.data);
+      });
   }
 
   function phoneFormat(v: string) {
@@ -101,9 +122,21 @@ function Tabulacao() {
       <NavBar />
       <div className="container-users">
         <div className="breadcrumb">
-          <Link to={'/home/dashboard'}>Dashboard</Link>
-          <IoIosArrowForward size={16} color='#7f808b' />
-          <Link to={'/home/categories'}>Tabulação</Link>
+          <div className="breadcrumb-link">
+            <Link to={'/home/dashboard'}>Dashboard</Link>
+            <IoIosArrowForward size={16} color='#7f808b' />
+            <Link to={'/home/categories'}>Categorias</Link>
+          </div>
+
+          <div className='profile-info'>
+            <div className='profile-text'>
+              <p className='name'>{user?.name}</p>
+              <p className='email'>{user?.email}</p>
+            </div>
+            <div className='profile'>
+              <p>JV</p>
+            </div>
+          </div>
         </div>
         <div className="header-page">
           <h1>Tabulação</h1>

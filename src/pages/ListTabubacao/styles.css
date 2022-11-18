@@ -1,5 +1,7 @@
 .container-list {
-    padding: 4%;
+    padding: 0 4% 4% 4%;
+    overflow-y: auto;
+    height: calc(100vh + 34px);
 }
 
 .border-name {
@@ -25,7 +27,6 @@
     justify-content: space-between;
     grid-gap: 10px;
 }
-
 
 .row-clients:last-child {
     border-bottom-left-radius: 16px;
